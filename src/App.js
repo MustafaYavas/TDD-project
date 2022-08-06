@@ -1,11 +1,11 @@
 import styles from './App.module.css';
-import SearchBar from './components/SearchBar/SearchBar';
+import Weather from './components/Weather/Weather';
 
 const App = () => {
     return (
-        <div className={styles['main-container']}>
+        <div className={`${styles['main-container']} text-white`} >
             <div className={styles['sub-container']}>
-                <SearchBar />
+                <Weather />
             </div>
         </div>
     )

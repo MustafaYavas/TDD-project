@@ -1,0 +1,18 @@
+.container {
+    width: 100%;
+    height: auto;
+}
+
+.container-items {
+    width: 80%;
+}
+
+.img-today {
+    width: 7rem;
+    height: 7rem;
+}
+
+.img-future {
+    width: 3rem;
+    height: 3rem;
+}
