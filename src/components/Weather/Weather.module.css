@@ -7,6 +7,30 @@
     width: 80%;
 }
 
+.button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 3rem;
+    background-color: white;
+    border: 1px solid #273746;
+    border-radius: .5rem;
+    padding: .55rem .5rem;
+    font-weight: 600;
+    color: #273746;
+}
+
+/* .button:hover {
+    background-color: transparent;
+    border-color: white;
+    color: white;
+} */
+
+button:disabled {
+    background-color: rgba(80, 97, 97, 0.788);
+    cursor: not-allowed;
+  }
+
 .img-today {
     width: 7rem;
     height: 7rem;
