@@ -22,7 +22,7 @@ const Weather = () => {
 
     const searchHandler = async() => {
         setIsLoading(true);
-        let response = await fetch(`http://api.openweathermap.org/geo/1.0/direct?q=${city}&limit=1&appid=${process.env.REACT_APP_API_KEY}`);
+        let response = await fetch(`https://api.openweathermap.org/geo/1.0/direct?q=${city}&limit=1&appid=${process.env.REACT_APP_API_KEY}`);
         if(!response.ok) 
             throw new Error('fetching employee data failed!');
     
