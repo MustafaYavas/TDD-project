@@ -58,6 +58,45 @@ jest.mock('axios', () => ({
                             pod: "d"
                         },
                         dt_txt: "2022-08-09 09:00:00"
+                    },
+                    {
+                        dt: 1660132800,
+                        main: {
+                            temp: 30,
+                            feels_like: 30.23,
+                            temp_min: 30.14,
+                            temp_max: 32.17,
+                            pressure: 1007,
+                            sea_level: 1007,
+                            grnd_level: 962,
+                            humidity: 43,
+                            temp_kf: -2.03
+                        },
+                        weather: [
+                            {
+                                id: 500,
+                                main: "Rain",
+                                description: "light rain",
+                                icon: "10d"
+                            }
+                        ],
+                        clouds: {
+                            all: 15
+                        },
+                        wind: {
+                            speed: 0.68,
+                            deg: 278,
+                            gust: 2.36
+                        },
+                        visibility: 10000,
+                        pop: 0.21,
+                        rain: {
+                            "3h": 0.45
+                        },
+                        sys: {
+                            pod: "d"
+                        },
+                        dt_txt: "2022-08-10 12:00:00"
                     }
                 ]
             } 
@@ -82,7 +121,7 @@ describe('input', () => {
     test('city input should change', () => {
         render(<Weather />);
         const inputElement = screen.getByPlaceholderText(/city/i);
-        const testValue = 'istanbul'
+        const testValue = 'denizli'
         fireEvent.change(inputElement, { target: { value: testValue}});
         expect(inputElement.value).not.toHaveLength(0);
     })
@@ -101,7 +140,6 @@ describe('button', () => {
 })
 
 describe('weather datas', () => {
-    // fetch ettikten sonra hata yoksa hava durumu açıklaması render edilmeli
     test('Weather datas should be rendered after fetching', async() => {
         render(<Weather />);
         const inputElement = screen.getByPlaceholderText(/city/i);
@@ -113,25 +151,9 @@ describe('weather datas', () => {
 
         const descriptionElement = await screen.findByTestId(/weather-desc/i);
         expect(descriptionElement).toBeInTheDocument();
-        
-    })
-})
-
-describe('other components', () => {
-    test('Main paragraph should be rendered only input is not empty', async() => {
-        render(<Weather />);
-        const inputElement = screen.getByPlaceholderText(/city/i);
-        const buttonElement = screen.getByRole('button');
-
-        const testValue = '';
-        fireEvent.change(inputElement, { target: { value: testValue } });
-        fireEvent.click(buttonElement);
-
-        const paragraphElement = await screen.findByTestId(/main-parag/i);
-        expect(paragraphElement).toBeInTheDocument();
     })
 
-    test('Loading spinner should be rendered while fetching', async() => {
+    test('City and country name should be rendered after fetching', async() => {
         render(<Weather />);
         const inputElement = screen.getByPlaceholderText(/city/i);
         const buttonElement = screen.getByRole('button');
@@ -140,7 +162,101 @@ describe('other components', () => {
         fireEvent.change(inputElement, { target: { value: testValue } });
         fireEvent.click(buttonElement);
 
-        const loadingElement = await screen.findByTestId(/loading/i);
+        const cityElement = await screen.findByText('Denizli / TR');
+        expect(cityElement).toBeInTheDocument();
+    })
+
+    test('Current weather image should be rendered after fetching', async() => {
+        render(<Weather />);
+        const inputElement = screen.getByPlaceholderText(/city/i);
+        const buttonElement = screen.getByRole('button');
+
+        const testValue = 'denizli';
+        fireEvent.change(inputElement, { target: { value: testValue } });
+        fireEvent.click(buttonElement);
+
+        const imageElement = await screen.findByAltText(/weather-today/i);
+        expect(imageElement).toHaveAttribute('src', '/assets/02d.svg')
+    })
+
+    test('Current weather should be rendered after fetching', async() => {
+        render(<Weather />);
+        const inputElement = screen.getByPlaceholderText(/city/i);
+        const buttonElement = screen.getByRole('button');
+
+        const testValue = 'denizli';
+        fireEvent.change(inputElement, { target: { value: testValue } });
+        fireEvent.click(buttonElement);
+
+        const degreeElement = await screen.findByText(/28°/i);
+        expect(degreeElement).toBeInTheDocument();
+    })
+
+    test('Should be 0 when there is no chance of rain', async() => {
+        render(<Weather />);
+        const inputElement = screen.getByPlaceholderText(/city/i);
+        const buttonElement = screen.getByRole('button');
+
+        const testValue = 'denizli';
+        fireEvent.change(inputElement, { target: { value: testValue } });
+        fireEvent.click(buttonElement);
+
+        const rainElement = await screen.findByTestId(/rain/i);
+        expect(rainElement).toHaveTextContent('0 %');
+    })
+
+
+    test('Future weather image should be rendered after fetching', async() => {
+        render(<Weather />);
+        const inputElement = screen.getByPlaceholderText(/city/i);
+        const buttonElement = screen.getByRole('button');
+
+        const testValue = 'denizli';
+        fireEvent.change(inputElement, { target: { value: testValue } });
+        fireEvent.click(buttonElement);
+
+        const imageElement = await screen.findByAltText(/weather-future/i);
+        expect(imageElement).toHaveAttribute('src', '/assets/10d.svg')
+    })
+
+    test('Future weather should be rendered after fetching', async() => {
+        render(<Weather />);
+        const inputElement = screen.getByPlaceholderText(/city/i);
+        const buttonElement = screen.getByRole('button');
+
+        const testValue = 'denizli';
+        fireEvent.change(inputElement, { target: { value: testValue } });
+        fireEvent.click(buttonElement);
+
+        const degreeElement = await screen.findByText(/30°/i);
+        expect(degreeElement).toBeInTheDocument();
+    })
+})
+
+describe('other components', () => {
+    test('Main paragraph should be rendered only input is empty', () => {
+        render(<Weather />);
+        const inputElement = screen.getByPlaceholderText(/city/i);
+        const buttonElement = screen.getByRole('button');
+
+        const testValue = '';
+        fireEvent.change(inputElement, { target: { value: testValue } });
+        fireEvent.click(buttonElement);
+
+        const paragraphElement = screen.getByTestId(/main-parag/i);
+        expect(paragraphElement).toHaveTextContent(/Write a city you want/i);
+    })
+
+    test('Loading spinner should be rendered while fetching', () => {
+        render(<Weather />);
+        const inputElement = screen.getByPlaceholderText(/city/i);
+        const buttonElement = screen.getByRole('button');
+
+        const testValue = 'denizli';
+        fireEvent.change(inputElement, { target: { value: testValue } });
+        fireEvent.click(buttonElement);
+
+        const loadingElement = screen.getByTestId(/loading/i);
         expect(loadingElement).toBeInTheDocument();
     })
 
@@ -154,9 +270,24 @@ describe('other components', () => {
         fireEvent.change(inputElement, { target: { value: testValue } });
         fireEvent.click(buttonElement);
 
-        await waitFor(async() => {
-            const loadingElement = await screen.findByTestId(/loading/i);
+        await waitFor(() => {
+            const loadingElement = screen.getByTestId(/loading/i);
             expect(loadingElement.value).toBe(undefined);
+        })
+    })
+
+    test('Error text should be rendered when data is not fetched', async() => {
+        render(<Weather />);
+        const inputElement = screen.getByPlaceholderText(/city/i);
+        const buttonElement = screen.getByRole('button');
+
+        const testValue = 'xxxxxxxxx';
+        fireEvent.change(inputElement, { target: { value: testValue } });
+        fireEvent.click(buttonElement);
+
+        await waitFor(() => {
+            const errorElement = screen.getByTestId(/error/i);
+            expect(errorElement).toHaveTextContent(/The city you were looking for was not found!/i);
         })
     })
 })

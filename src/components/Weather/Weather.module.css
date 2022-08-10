@@ -20,12 +20,6 @@
     color: #273746;
 }
 
-/* .button:hover {
-    background-color: transparent;
-    border-color: white;
-    color: white;
-} */
-
 button:disabled {
     background-color: rgba(80, 97, 97, 0.788);
     cursor: not-allowed;
